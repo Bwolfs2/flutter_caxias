@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../data/youtube_videos_data.dart';
-import '../domain/youtube_video.dart';
+import 'package:meetup_flutter_caxias/domain/entities/youtube_video.dart';
+
+import '../app_data_scope.dart';
 import '../utils/external_link.dart';
 
 class VideosPage extends StatelessWidget {
@@ -19,59 +20,78 @@ class VideosPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    if (kYoutubeVideos.isEmpty) {
-      return Center(
-        child: Text(
-          'Nenhum vídeo cadastrado. Edite lib/data/youtube_videos_data.dart.',
-          style: theme.textTheme.bodyLarge,
-          textAlign: TextAlign.center,
-        ),
-      );
-    }
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        final int columns = _columnCountForWidth(constraints.maxWidth);
-        return CustomScrollView(
-          slivers: <Widget>[
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Vídeos no YouTube',
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
+    final AppDataScope scope = AppDataScope.of(context);
+    return FutureBuilder(
+      future: scope.youtubeVideos.fetchVideos(),
+      builder: (BuildContext context, AsyncSnapshot<List<YoutubeVideo>> snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError || snapshot.data == null) {
+          return Center(
+            child: Text(
+              'Não foi possível carregar os vídeos.',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          );
+        }
+        final List<YoutubeVideo> videos = snapshot.data!;
+        final ThemeData theme = Theme.of(context);
+        if (videos.isEmpty) {
+          return Center(
+            child: Text(
+              'Nenhum vídeo cadastrado. Edite '
+              'lib/data/datasources/youtube_videos_local_data_source_impl.dart.',
+              style: theme.textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
+          );
+        }
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            final int columns = _columnCountForWidth(constraints.maxWidth);
+            return CustomScrollView(
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Vídeos no YouTube',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Miniaturas oficiais do YouTube. Toque em um card para abrir o vídeo.',
+                        style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+                SliverPadding(
+                  padding: EdgeInsets.zero,
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: columns,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: columns == 1 ? 1.35 : 0.95,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        final YoutubeVideo video = videos[index];
+                        return _YoutubeVideoCard(video: video);
+                      },
+                      childCount: videos.length,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Miniaturas oficiais do YouTube. Toque em um card para abrir o vídeo.',
-                    style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.zero,
-              sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: columns,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: columns == 1 ? 1.35 : 0.95,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    final YoutubeVideo video = kYoutubeVideos[index];
-                    return _YoutubeVideoCard(video: video);
-                  },
-                  childCount: kYoutubeVideos.length,
-                ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         );
       },
     );

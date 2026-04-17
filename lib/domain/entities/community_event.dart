@@ -1,4 +1,4 @@
-/// A meetup or community event shown on the site (static data).
+/// A meetup or community event shown on the site.
 final class CommunityEvent {
   const CommunityEvent({
     required this.title,
@@ -6,6 +6,7 @@ final class CommunityEvent {
     required this.description,
     this.registrationUrl,
     this.locationLabel,
+    this.coverImageUrl,
   });
 
   final String title;
@@ -13,4 +14,7 @@ final class CommunityEvent {
   final String description;
   final String? registrationUrl;
   final String? locationLabel;
+
+  /// Optional hero image for landing cards (HTTPS URL).
+  final String? coverImageUrl;
 }
