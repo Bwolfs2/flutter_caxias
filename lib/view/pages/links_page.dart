@@ -5,6 +5,7 @@ import 'package:meetup_flutter_caxias/domain/entities/social_link.dart';
 
 import '../app_data_scope.dart';
 import '../utils/external_link.dart';
+import '../widgets/site_content_frame.dart';
 import '../widgets/social_link_icon.dart';
 
 class LinksPage extends StatelessWidget {
@@ -37,40 +38,48 @@ class LinksPage extends StatelessWidget {
         return ListView(
           padding: const EdgeInsets.symmetric(vertical: 24),
           children: <Widget>[
-            Text(
-              'Links oficiais',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Atualize os endereços em '
-              'lib/data/datasources/community_social_links_local_data_source_impl.dart.',
-              style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
-            ),
-            const SizedBox(height: 16),
-            ...links.map(
-              (SocialLink link) => Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  leading: Icon(socialLinkIcon(link.iconKind)),
-                  title: Text(link.label),
-                  subtitle: Text(
-                    link.url,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+            SiteContentFrame(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text(
+                    'Links oficiais',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
-                  trailing: const Icon(Icons.open_in_new),
-                  onTap: () => openExternalLink(context: context, url: link.url),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Meetup principal: ${copy.meetupUrl}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+                  const SizedBox(height: 8),
+                  Text(
+                    'Atualize os endereços em '
+                    'lib/data/datasources/community_social_links_local_data_source_impl.dart.',
+                    style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+                  ),
+                  const SizedBox(height: 16),
+                  ...links.map(
+                    (SocialLink link) => Card(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      child: ListTile(
+                        leading: Icon(socialLinkIcon(link.iconKind)),
+                        title: Text(link.label),
+                        subtitle: Text(
+                          link.url,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: const Icon(Icons.open_in_new),
+                        onTap: () =>
+                            openExternalLink(context: context, url: link.url),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Meetup principal: ${copy.meetupUrl}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

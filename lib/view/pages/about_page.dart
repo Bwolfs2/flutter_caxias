@@ -4,6 +4,7 @@ import 'package:meetup_flutter_caxias/domain/entities/site_copy.dart';
 
 import '../app_data_scope.dart';
 import '../utils/external_link.dart';
+import '../widgets/site_content_frame.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -30,49 +31,56 @@ class AboutPage extends StatelessWidget {
         return ListView(
           padding: const EdgeInsets.symmetric(vertical: 24),
           children: <Widget>[
-            Text(
-              copy.aboutIntroTitle,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w800,
+            SiteContentFrame(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text(
+                    copy.aboutIntroTitle,
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    copy.aboutIntroBody,
+                    style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
+                  ),
+                  const SizedBox(height: 28),
+                  Text(
+                    copy.aboutParticipateTitle,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    copy.aboutParticipateBody,
+                    style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
+                  ),
+                  const SizedBox(height: 28),
+                  Text(
+                    copy.aboutConductTitle,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    copy.aboutConductBody,
+                    style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.tonalIcon(
+                    onPressed: () => openExternalLink(
+                      context: context,
+                      url: copy.flutterCodeOfConductUrl,
+                    ),
+                    icon: const Icon(Icons.gavel_outlined),
+                    label: const Text('Código de conduta Flutter'),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              copy.aboutIntroBody,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
-            ),
-            const SizedBox(height: 28),
-            Text(
-              copy.aboutParticipateTitle,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              copy.aboutParticipateBody,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
-            ),
-            const SizedBox(height: 28),
-            Text(
-              copy.aboutConductTitle,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              copy.aboutConductBody,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
-            ),
-            const SizedBox(height: 16),
-            FilledButton.tonalIcon(
-              onPressed: () => openExternalLink(
-                context: context,
-                url: copy.flutterCodeOfConductUrl,
-              ),
-              icon: const Icon(Icons.gavel_outlined),
-              label: const Text('Código de conduta Flutter'),
             ),
           ],
         );

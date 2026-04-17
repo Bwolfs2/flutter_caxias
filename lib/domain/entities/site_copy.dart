@@ -32,6 +32,9 @@ final class SiteCopy {
     required this.footerConductLabel,
     required this.footerPrivacyLabel,
     required this.footerPrivacyUrl,
+    required this.eventsPageBadge,
+    required this.eventsPageTitle,
+    required this.eventsPageSubtitle,
   });
 
   final String siteTitle;
@@ -65,4 +68,7 @@ final class SiteCopy {
   final String footerConductLabel;
   final String footerPrivacyLabel;
   final String footerPrivacyUrl;
+  final String eventsPageBadge;
+  final String eventsPageTitle;
+  final String eventsPageSubtitle;
 }

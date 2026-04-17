@@ -58,6 +58,11 @@ final class CommunityCopyLocalDataSourceImpl
     footerConductLabel: 'Code of Conduct',
     footerPrivacyLabel: 'Privacy Policy',
     footerPrivacyUrl: 'https://policies.google.com/privacy',
+    eventsPageBadge: 'THE LUMINOUS NEXUS',
+    eventsPageTitle: 'Próximos Eventos',
+    eventsPageSubtitle:
+        'Conecte-se com a comunidade de tecnologia mais vibrante da '
+        'Serra Gaúcha. Aprenda, compartilhe e evolua com o ecossistema Flutter.',
   );
 
   @override

@@ -4,6 +4,7 @@ import 'package:meetup_flutter_caxias/domain/entities/youtube_video.dart';
 
 import '../app_data_scope.dart';
 import '../utils/external_link.dart';
+import '../widgets/site_content_frame.dart';
 
 class VideosPage extends StatelessWidget {
   const VideosPage({super.key});
@@ -47,51 +48,58 @@ class VideosPage extends StatelessWidget {
             ),
           );
         }
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            final int columns = _columnCountForWidth(constraints.maxWidth);
-            return CustomScrollView(
-              slivers: <Widget>[
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
+        return CustomScrollView(
+          slivers: <Widget>[
+            SliverToBoxAdapter(
+              child: SiteContentFrame(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: Text(
                         'Vídeos no YouTube',
                         style: theme.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Miniaturas oficiais do YouTube. Toque em um card para abrir o vídeo.',
-                        style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Miniaturas oficiais do YouTube. Toque em um card para abrir o vídeo.',
+                      style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: SiteContentFrame(
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    final int columns =
+                        _columnCountForWidth(constraints.maxWidth);
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columns,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: columns == 1 ? 1.35 : 0.95,
                       ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.zero,
-                  sliver: SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: columns,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: columns == 1 ? 1.35 : 0.95,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        final YoutubeVideo video = videos[index];
-                        return _YoutubeVideoCard(video: video);
+                      itemCount: videos.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _YoutubeVideoCard(video: videos[index]);
                       },
-                      childCount: videos.length,
-                    ),
-                  ),
+                    );
+                  },
                 ),
-              ],
-            );
-          },
+              ),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          ],
         );
       },
     );

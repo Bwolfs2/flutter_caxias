@@ -88,3 +88,15 @@ LinearGradient primaryCtaGradient() {
     end: Alignment.bottomRight,
   );
 }
+
+/// CTA on event listing cards (light blue → deeper blue, dark label).
+LinearGradient eventListingCtaGradient() {
+  return const LinearGradient(
+    colors: <Color>[
+      Color(0xFF90CAF9),
+      Color(0xFF1976D2),
+    ],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+}

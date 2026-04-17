@@ -10,6 +10,7 @@ import '../router/app_router.dart';
 import '../theme/app_theme.dart';
 import '../utils/external_link.dart';
 import '../widgets/gradient_cta_button.dart';
+import '../widgets/site_content_frame.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -72,19 +73,21 @@ final class _HomeLandingBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const SizedBox(height: 24),
-          _HeroSection(copy: copy),
-          const SizedBox(height: 56),
-          _AboutSection(copy: copy),
-          const SizedBox(height: 56),
-          _FeatureCardsRow(copy: copy),
-          const SizedBox(height: 56),
-          if (events.isNotEmpty) _FeaturedEventCard(event: events.first),
-          const SizedBox(height: 48),
-        ],
+      child: SiteContentFrame(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            const SizedBox(height: 24),
+            _HeroSection(copy: copy),
+            const SizedBox(height: 56),
+            _AboutSection(copy: copy),
+            const SizedBox(height: 56),
+            _FeatureCardsRow(copy: copy),
+            const SizedBox(height: 56),
+            if (events.isNotEmpty) _FeaturedEventCard(event: events.first),
+            const SizedBox(height: 48),
+          ],
+        ),
       ),
     );
   }

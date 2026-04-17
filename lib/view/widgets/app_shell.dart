@@ -44,18 +44,7 @@ final class AppShell extends StatelessWidget {
                 joinUrl: copy.meetupUrl,
                 joinLabel: copy.joinCommunityCtaLabel,
               ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1120),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: child,
-                    ),
-                  ),
-                ),
-              ),
+              Expanded(child: child),
               SiteFooterBar(copy: copy),
             ],
           ),
