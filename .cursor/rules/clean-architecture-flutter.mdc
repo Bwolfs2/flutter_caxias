@@ -1,0 +1,68 @@
+---
+description: Clean Architecture — camadas View, Domain e Data; interfaces de datasources no Domain.
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# Clean Architecture (Flutter)
+
+Este projeto segue **Clean Architecture** com três camadas e regras de dependência explícitas.
+
+## Estrutura de pastas
+
+```
+lib/
+  view/                 # Apresentação: páginas, widgets, estado da UI, rotas (somente Flutter/UI).
+  domain/               # Regras de negócio puras (Dart), sem Flutter.
+    entities/           # Modelos de domínio (imutáveis quando possível).
+    repositories/       # Contratos abstratos dos repositórios (opcional, se usar repositório).
+    datasources/        # OBRIGATÓRIO: apenas interfaces (contratos) dos datasources.
+  data/                 # Detalhes de infraestrutura.
+    datasources/        # Implementações concretas das interfaces do Domain.
+    models/             # DTOs / mapeamentos quando necessário.
+    repositories/       # Implementações dos repositórios do Domain (se existirem).
+```
+
+Nomes em **inglês** para pastas/arquivos (`view`, `domain`, `data`) são preferidos; o conteúdo exposto ao usuário continua em PT-BR onde fizer sentido.
+
+## Regras de dependência
+
+| Camada  | Pode importar                         | Não pode importar                                      |
+|---------|----------------------------------------|--------------------------------------------------------|
+| **view**   | `domain` (contratos, entidades)       | `data` (implementações)                              |
+| **domain** | apenas Dart SDK / tipos locais      | `package:flutter/*`, `data`, pacotes de IO/redes       |
+| **data**   | `domain`                              | `view`                                                 |
+
+- A **View** obtém dados apenas via abstrações definidas no **Domain** (ex.: interface de repositório ou use case), nunca instanciando classes de `lib/data/`.
+- O **Domain** define **interfaces de datasources** em `lib/domain/datasources/` (ex.: `abstract interface class CommunityRemoteDataSource`). Implementações ficam em `lib/data/datasources/`.
+- Repositórios: se existirem, a **interface** no Domain (`domain/repositories/`) e a **implementação** no Data (`data/repositories/`), orquestrando datasources.
+
+## Contratos no Domain (datasources)
+
+Use contratos explícitos; evite classes concretas no Domain.
+
+```dart
+// lib/domain/datasources/community_remote_data_source.dart
+abstract interface class CommunityRemoteDataSource {
+  Future<String> fetchAboutMarkdown();
+}
+```
+
+```dart
+// lib/data/datasources/community_remote_data_source_impl.dart
+class CommunityRemoteDataSourceImpl implements CommunityRemoteDataSource {
+  @override
+  Future<String> fetchAboutMarkdown() async { /* http, asset, etc. */ }
+}
+```
+
+## Ao adicionar funcionalidade
+
+1. Definir ou ajustar entidades e **interfaces de datasource** no `domain/`.
+2. Implementar em `data/datasources/` (e repositório em `data/repositories/` se aplicável).
+3. Expor à UI apenas via contrato do Domain (injeção via construtor parâmetro tipado como interface, `Provider`, `get_it`, etc. — manter o desacoplamento).
+4. **View** apenas orquestra widgets e chama o caso de uso / repositório abstrato.
+
+## Refatoração do legado
+
+Código existente fora dessa árvore (`lib/pages`, `lib/widgets`, etc.) deve ser **migrado** para `lib/view/` (e fluxos de dados alinhados a Domain/Data) quando houver alteração relevante nesses módulos; não adicionar novos datasources ou acesso direto a API/arquivos fora de `lib/data/`.
