@@ -88,30 +88,84 @@ class EventsPage extends StatelessWidget {
                   child: _EventsPageHeader(copy: copy),
                 ),
               ),
-              SizedBox(
-                height: _eventCardTotalHeight,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.fromLTRB(
-                    _horizontalListPadding,
-                    8,
-                    _horizontalListPadding,
-                    24,
-                  ),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: events.length,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const SizedBox(width: _horizontalListGap),
-                  itemBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      width: _eventCardWidth,
-                      height: _eventCardTotalHeight,
-                      child: _EventDiscoverCard(event: events[index]),
-                    );
-                  },
-                ),
-              ),
+              _EventsCardsStrip(events: events),
             ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// When all cards fit in the viewport width, centers the row; otherwise horizontal scroll.
+final class _EventsCardsStrip extends StatelessWidget {
+  const _EventsCardsStrip({required this.events});
+
+  final List<CommunityEvent> events;
+
+  double _contentWidthFor(int count) {
+    if (count <= 0) {
+      return 0;
+    }
+    return count * _eventCardWidth + (count - 1) * _horizontalListGap;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double maxWidth = constraints.maxWidth;
+        final double contentWidth = _contentWidthFor(events.length);
+        final List<Widget> cardWidgets = <Widget>[
+          for (int i = 0; i < events.length; i++) ...<Widget>[
+            if (i > 0) const SizedBox(width: _horizontalListGap),
+            SizedBox(
+              width: _eventCardWidth,
+              height: _eventCardTotalHeight,
+              child: _EventDiscoverCard(event: events[i]),
+            ),
+          ],
+        ];
+        final Widget rowOfCards = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: cardWidgets,
+        );
+        if (contentWidth <= maxWidth) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(
+              _horizontalListPadding,
+              8,
+              _horizontalListPadding,
+              24,
+            ),
+            child: SizedBox(
+              height: _eventCardTotalHeight,
+              width: maxWidth,
+              child: Center(child: rowOfCards),
+            ),
+          );
+        }
+        return SizedBox(
+          height: _eventCardTotalHeight,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(
+              _horizontalListPadding,
+              8,
+              _horizontalListPadding,
+              24,
+            ),
+            physics: const BouncingScrollPhysics(),
+            itemCount: events.length,
+            separatorBuilder: (BuildContext context, int index) =>
+                const SizedBox(width: _horizontalListGap),
+            itemBuilder: (BuildContext context, int index) {
+              return SizedBox(
+                width: _eventCardWidth,
+                height: _eventCardTotalHeight,
+                child: _EventDiscoverCard(event: events[index]),
+              );
+            },
           ),
         );
       },
